@@ -15,9 +15,9 @@ public class Student {
 
     public String toStringWithoutShouldOpen() {
         return "Student{" +
-                "id:" + id +
-                ", firstname:" + firstname +
-                ", lastname:" + lastname +
+                "id:" + id + "\n" +
+                "firstname:" + firstname + "\n" +
+                "lastname:" + lastname + "\n" +
                 '}';
     }
 }
