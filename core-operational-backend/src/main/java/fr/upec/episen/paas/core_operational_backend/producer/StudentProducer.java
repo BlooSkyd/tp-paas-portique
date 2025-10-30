@@ -5,8 +5,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import fr.upec.episen.paas.core_operational_backend.model.Student;
 import lombok.RequiredArgsConstructor;
+import paas.tp.common.backend.models.Student;
 
 @Service
 @RequiredArgsConstructor

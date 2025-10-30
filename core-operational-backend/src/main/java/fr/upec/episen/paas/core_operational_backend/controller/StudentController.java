@@ -3,7 +3,6 @@ package fr.upec.episen.paas.core_operational_backend.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.upec.episen.paas.core_operational_backend.model.Student;
 import fr.upec.episen.paas.core_operational_backend.service.StudentService;
 import lombok.RequiredArgsConstructor;
 
@@ -12,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import paas.tp.common.backend.models.Student;
 
 @RestController
 @RequestMapping("/core_operational_backend/students")

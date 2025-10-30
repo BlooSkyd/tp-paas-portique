@@ -1,4 +1,4 @@
-package fr.upec.episen.paas.core_operational_backend.model;
+package paas.tp.common.backend.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -6,8 +6,8 @@ import java.time.ZoneId;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import fr.upec.episen.paas.core_operational_backend.model.Student;
 import lombok.RequiredArgsConstructor;
+import paas.tp.common.backend.models.Student;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +18,7 @@ public class StudentService {
     public Student getStudentIfAllowed(Long id) {
         LocalTime time = LocalTime.now(ZoneId.of("Europe/Paris"));
         if (time.isBefore(LocalTime.of(8,0)) || time.isAfter(LocalTime.of(21,0))) {
-            return null;
+            //return null;
         }
 
         String key = "student:" + id;
