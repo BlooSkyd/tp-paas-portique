@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fr.upec.episen.paas.core_operational_backend.models.Student;
 import lombok.RequiredArgsConstructor;
-import paas.tp.common.backend.models.Student;
 
 @Service
 @RequiredArgsConstructor

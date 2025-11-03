@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  core-operational-backend:
+    build: .
+    container_name: core-operational-backend
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: 172.31.250.248:9092
+      SPRING_REDIS_HOST: localhost
+      SPRING_REDIS_PORT: 6379
+    ports:
+      - "8080:8080"
