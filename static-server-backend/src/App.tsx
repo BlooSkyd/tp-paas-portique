@@ -35,28 +35,32 @@ function App() {
     };
 
     ws.onmessage = (event) => {
-      const newLog: EntranceLog = JSON.parse(event.data);
-      setLogs(prev => [newLog, ...prev].slice(0, 50));
+      try {
+        const newLog: EntranceLog = JSON.parse(event.data);
+        setLogs(prev => [newLog, ...prev].slice(0, 50));
 
-      setStats(prev => {
-        const newTotal = prev.totalAttempts + 1;
-        const newAuthorized = prev.authorized + (newLog.authorized ? 1 : 0);
-        const newDenied = prev.denied + (!newLog.authorized ? 1 : 0);
-        const cacheHits = logs.filter(l => l.source === 'cache').length + (newLog.source === 'cache' ? 1 : 0);
-        const avgLat = logs.length > 0
-          ? (logs.reduce((sum, l) => sum + l.latency_ms, 0) + newLog.latency_ms) / (logs.length + 1)
-          : newLog.latency_ms;
+        setStats(prev => {
+          const newTotal = prev.totalAttempts + 1;
+          const newAuthorized = prev.authorized + (newLog.authorized ? 1 : 0);
+          const newDenied = prev.denied + (!newLog.authorized ? 1 : 0);
+          const cacheHits = logs.filter(l => l.source === 'cache').length + (newLog.source === 'cache' ? 1 : 0);
+          const avgLat = logs.length > 0
+              ? (logs.reduce((sum, l) => sum + l.latency_ms, 0) + newLog.latency_ms) / (logs.length + 1)
+              : newLog.latency_ms;
 
-        return {
-          totalAttempts: newTotal,
-          authorized: newAuthorized,
-          denied: newDenied,
-          cacheHitRate: (cacheHits / newTotal) * 100,
-          avgLatency: avgLat
-        };
-      });
+          return {
+            totalAttempts: newTotal,
+            authorized: newAuthorized,
+            denied: newDenied,
+            cacheHitRate: (cacheHits / newTotal) * 100,
+            avgLatency: avgLat
+          };
+        });
+
+      } catch (error) {
+        console.error('Error parsing JSON:', error);
+      }
     };
-
     ws.onerror = () => {
       setIsConnected(false);
       console.error('Erreur WebSocket');
@@ -70,7 +74,7 @@ function App() {
     return () => {
       ws.close();
     };
-  }, [logs]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">

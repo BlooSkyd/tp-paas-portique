@@ -1,6 +1,9 @@
 package paas.tp.entrance_cockpit_backend;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,9 +21,17 @@ public class EntranceConsumer {
 
 
     @KafkaListener(topics = "entrance-logs", groupId = "entrance-cockpit-backend")
-    public void consume(Object message) {
-        logger.info("Received message: " + message);
-        webSocketHandler.sendMessage(message.toString());
-        logger.info("Message sent to WebSocket");
+    public void consume(String message) {
+        logger.info("Received Kafka message: " + message);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(message);
+            webSocketHandler.sendMessage(jsonNode.toString());
+            logger.info("Json sent to WebSocket");
+        } catch (Exception e) {
+            logger.error("Error parsing JSON, sending raw message");
+            webSocketHandler.sendMessage(message);
+            logger.info("Raw message sent to WebSocket");
+        }
     }
 }
