@@ -4,7 +4,9 @@ COPY pom.xml .
 COPY src ./src
 RUN mvn clean package
 
-WORKDIR /app/target
+FROM eclipse-temurin:21-jdk
+WORKDIR /app
+COPY --from=build /app/target/core-operational-backend-0.0.1-SNAPSHOT.jar core-operational-backend.jar
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "core-operational-backend-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "core-operational-backend.jar"]
