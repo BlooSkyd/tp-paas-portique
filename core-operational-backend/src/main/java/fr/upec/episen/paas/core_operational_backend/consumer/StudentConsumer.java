@@ -23,7 +23,8 @@ public class StudentConsumer {
     private final StudentProducer studentProducer;
 
     @KafkaListener(topics = "attemps-logs", groupId = "core-operational-backend")
-    public void consumeStudentAttemptEvent(Long id) {
+    public void consumeStudentAttemptEvent(String idString) {
+        Long id = Long.parseLong(idString);
         Timestamp timestamp = Timestamp.from(Instant.now());
         StudentDTO studentDTO = new StudentDTO();
         studentDTO.setClassName("StudentConsumer");
