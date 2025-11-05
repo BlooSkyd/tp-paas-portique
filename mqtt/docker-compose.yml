@@ -9,3 +9,9 @@ services:
       - ./mosquitto/data:/mosquitto/data:rw
       - ./mosquitto/log:/mosquitto/log:rw
     restart: unless-stopped
+    networks:
+      - paas-network
+
+networks:
+  paas-network:
+    external: true

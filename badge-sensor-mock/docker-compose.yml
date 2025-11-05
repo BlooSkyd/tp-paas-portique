@@ -7,8 +7,8 @@ services:
       - MQTT_BROKER_PORT=1883
       - MQTT_TOPIC=sensor/data
     networks:
-      - cache-network
+      - paas-network
 
 networks:
-  cache-network:
+  paas-network:
     external: true
