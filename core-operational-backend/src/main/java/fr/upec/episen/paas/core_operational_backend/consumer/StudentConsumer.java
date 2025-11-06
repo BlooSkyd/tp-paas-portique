@@ -8,8 +8,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fr.upec.episen.paas.core_operational_backend.dto.StudentDTO;
-import fr.upec.episen.paas.core_operational_backend.models.Student;
 import fr.upec.episen.paas.core_operational_backend.producer.StudentProducer;
 import fr.upec.episen.paas.core_operational_backend.service.StudentService;
 import lombok.RequiredArgsConstructor;
@@ -23,38 +25,37 @@ public class StudentConsumer {
     private final StudentProducer studentProducer;
 
     @KafkaListener(topics = "attemps-logs", groupId = "core-operational-backend")
-    public void consumeStudentAttemptEvent(String idString) {
-        Long id = Long.parseLong(idString);
-        Timestamp timestamp = Timestamp.from(Instant.now());
+    public void consumeStudentAttemptEvent(String object) {
+
+        logger.info("Received student attempt event: " + object);
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode;
         StudentDTO studentDTO = new StudentDTO();
-        studentDTO.setClassName("StudentConsumer");
-        studentDTO.setTimestamp(timestamp);
         try {
-            Student student = studentService.getStudentIfAllowed(id);
-            studentDTO.setId(student.getId());
-            studentDTO.setFirstname(student.getFirstname());
-            studentDTO.setLastname(student.getLastname());
-            logger.info("Retrieved student: " + student);
-            if (student != null && student.isShouldOpen()) {
-                studentDTO.setAllowed(true);
+            jsonNode = mapper.readTree(object);
+            Long studentId = jsonNode.get("studentId").asLong();
+            Long doorId = jsonNode.get("doorId").asLong();
+
+            studentDTO = studentService.getStudentDTO(studentId);
+            studentDTO.setDoorId(doorId);
+            studentDTO.setTimestamp(Timestamp.from(Instant.now()));
+
+            if (studentDTO.isAllowed()) {
                 studentDTO.setStatus("OK");
                 studentProducer.sendEntryAllowed(studentDTO);
                 studentProducer.sendEntryLogs(studentDTO);
-                logger.info("Student with ID " + id + " is allowed to enter.");
+                logger.info("Student with ID " + studentId + " is allowed to enter through the door " + doorId + ".");
             } else {
-                studentDTO.setAllowed(false);
                 studentDTO.setStatus("OK");
                 studentProducer.sendEntryLogs(studentDTO);
-                logger.info("Student with ID " + id + " is not allowed to enter.");
+                logger.info("Student with ID " + studentId + " is not allowed to enter through the door " + doorId + ".");
             }
-        } catch (Exception e) {
-            studentDTO.setId(null);
-            studentDTO.setFirstname(null);
-            studentDTO.setLastname(null);
-            studentDTO.setAllowed(false);
+        }
+        catch (Exception e) {
+            logger.error("Error processing student attempt event: " + e.getMessage());
             studentDTO.setStatus("KO");
             studentProducer.sendEntryLogs(studentDTO);
-            logger.error("Error processing student with ID " + id, e);
+            return;
         }
     }
 }

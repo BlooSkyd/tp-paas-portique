@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Student {
-    private Long id;
+    private Long studentId;
     private String firstname;
     private String lastname;
     private boolean shouldOpen;

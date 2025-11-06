@@ -3,7 +3,7 @@ package fr.upec.episen.paas.core_operational_backend.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.upec.episen.paas.core_operational_backend.models.Student;
+import fr.upec.episen.paas.core_operational_backend.dto.StudentDTO;
 import fr.upec.episen.paas.core_operational_backend.service.StudentService;
 import lombok.RequiredArgsConstructor;
 
@@ -24,11 +24,11 @@ public class StudentController {
     private static final Logger logger = LogManager.getLogger(StudentController.class);
 
     @GetMapping("/attempts/{id}")
-    public Student openDoorForStudent(@PathVariable Long id) {
-        Student student = studentService.getStudentIfAllowed(id);
+    public StudentDTO openDoorForStudent(@PathVariable Long id) {
+        StudentDTO student = studentService.getStudentDTO(id);
         if (student != null) {
             logger.info("Student with ID " + id + " is allowed to enter.");
-            return studentService.getStudentIfAllowed(id);
+            return studentService.getStudentDTO(id);
         } else {
             logger.info("Student with ID " + id + " is not allowed to enter.");
             return null;
