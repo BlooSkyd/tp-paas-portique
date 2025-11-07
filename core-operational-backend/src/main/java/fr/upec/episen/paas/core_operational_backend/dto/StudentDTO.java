@@ -1,0 +1,22 @@
+package fr.upec.episen.paas.core_operational_backend.dto;
+
+import java.sql.Timestamp;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class StudentDTO {
+    private Long studentId;
+    private Long doorId;
+    private String firstname;
+    private String lastname;
+    private Timestamp timestamp;
+    private String className;
+    private boolean allowed;
+    private String status;
+    private String service = "core-operational-backend";
+}
