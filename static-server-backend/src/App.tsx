@@ -27,7 +27,7 @@ function App() {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8087/ws/entrance');
+    const ws = new WebSocket('ws://192.168.248.140/ws/entrance');
 
     ws.onopen = () => {
       setIsConnected(true);
