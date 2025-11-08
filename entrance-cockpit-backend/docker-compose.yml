@@ -1,8 +1,0 @@
-services:
-  entrance-cockpit-backend:
-    build: .
-    container_name: entrance-cockpit-backend
-    environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: 192.168.248.103:9092
-    ports:
-      - "8087:8087"
