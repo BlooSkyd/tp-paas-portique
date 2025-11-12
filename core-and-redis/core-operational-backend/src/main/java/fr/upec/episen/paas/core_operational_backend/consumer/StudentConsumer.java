@@ -24,10 +24,10 @@ public class StudentConsumer {
     private final StudentService studentService;
     private final StudentProducer studentProducer;
 
-    @KafkaListener(topics = "attemps-logs", groupId = "core-operational-backend")
-    public void consumeStudentAttemptEvent(String object) {
+    @KafkaListener(topics = "entrance-logs", groupId = "core-operational-backend")
+    public void consumeStudentEntranceEvent(String object) {
 
-        logger.info("Received student attempt event: " + object);
+        logger.info("Received student entrance event: " + object);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode;
         StudentDTO studentDTO = new StudentDTO();
@@ -42,16 +42,15 @@ public class StudentConsumer {
 
             if (studentDTO.isAllowed()) {
                 studentDTO.setStatus("OK");
-                studentProducer.sendEntryAllowed(studentDTO);
-                studentProducer.sendEntryLogs(studentDTO);
                 logger.info("Student with ID " + studentId + " is allowed to enter through the door " + doorId + ".");
             } else {
                 studentDTO.setStatus("OK");
-                studentProducer.sendEntryLogs(studentDTO);
                 logger.info("Student with ID " + studentId + " is not allowed to enter through the door " + doorId + ".");
             }
-        }
-        catch (Exception e) {
+
+            studentProducer.sendEntry(studentDTO);
+            studentProducer.sendEntryLogs(studentDTO);
+        } catch (Exception e) {
             logger.error("Error processing student attempt event: " + e.getMessage());
             studentDTO.setStatus("KO");
             studentProducer.sendEntryLogs(studentDTO);

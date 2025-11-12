@@ -33,7 +33,7 @@ public class StudentService {
     public StudentDTO getStudentDTO(Long id) {
         Student student = getStudent(id);
         StudentDTO studentDTO = new StudentDTO();
-        studentDTO.setStudentId(id);
+        studentDTO.setNum(id);
         studentDTO.setClassName("StudentService");
         if (student != null) {
             boolean allowed = false;

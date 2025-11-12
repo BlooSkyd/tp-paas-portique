@@ -11,7 +11,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 public class BadgeSensorMock {
     private static String HOST = System.getenv("MQTT_BROKER_HOST");
     private static String PORT = System.getenv("MQTT_BROKER_PORT");
-    private static String TOPIC = System.getenv("MQTT_TOPIC");
+    private static String TOPIC = System.getenv("MQTT_BADGE_TOPIC");
 
     private static final Logger logger = LogManager.getLogger(BadgeSensorMock.class);
 

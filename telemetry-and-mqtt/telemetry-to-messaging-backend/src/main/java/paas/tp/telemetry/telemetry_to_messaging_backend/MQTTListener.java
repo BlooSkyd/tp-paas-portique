@@ -13,7 +13,7 @@ public class MQTTListener {
 
     private static String HOST = System.getenv("MQTT_BROKER_HOST");
     private static String PORT = System.getenv("MQTT_BROKER_PORT");
-    private static String TOPIC = System.getenv("MQTT_TOPIC");
+    private static String TOPIC = System.getenv("MQTT_BADGE_TOPIC");
 
     private final KafkaSender kafkaSender;
     private MqttClient client;

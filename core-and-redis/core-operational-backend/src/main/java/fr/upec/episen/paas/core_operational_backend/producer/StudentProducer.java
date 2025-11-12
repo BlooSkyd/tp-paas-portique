@@ -14,9 +14,9 @@ public class StudentProducer {
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private static final Logger logger = LogManager.getLogger(StudentProducer.class);
 
-    public void sendEntryAllowed(StudentDTO studentDTO) {
+    public void sendEntry(StudentDTO studentDTO) {
         logger.info("Sending entry allowed event for student: " + studentDTO);
-        kafkaTemplate.send("entrance-logs", studentDTO);
+        kafkaTemplate.send("attemps-logs", studentDTO);
     }
 
     public void sendEntryLogs(StudentDTO studentDTO) {

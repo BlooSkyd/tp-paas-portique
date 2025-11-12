@@ -5,9 +5,9 @@ services:
     ports:
       - "1883:1883"
     volumes:
-      - ./mosquitto/config:/mosquitto/config:rw
-      - ./mosquitto/data:/mosquitto/data:rw
-      - ./mosquitto/log:/mosquitto/log:rw
+      - ./mqtt/mosquitto/config:/mosquitto/config:rw
+      - ./mqtt/mosquitto/data:/mosquitto/data:rw
+      - ./mqtt/mosquitto/log:/mosquitto/log:rw
     restart: unless-stopped
 
   telemetry-to-messaging-backend:
