@@ -19,7 +19,7 @@ public class People {
     private Long id;
 
     @Column(name = "num", unique = true)
-    private String num;
+    private Long num;
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
