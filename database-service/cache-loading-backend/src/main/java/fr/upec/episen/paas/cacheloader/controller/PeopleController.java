@@ -4,6 +4,7 @@ import fr.upec.episen.paas.cacheloader.model.People;
 import fr.upec.episen.paas.cacheloader.model.Student;
 import fr.upec.episen.paas.cacheloader.repository.PeopleRepository;
 import fr.upec.episen.paas.cacheloader.service.RedisService;
+import fr.upec.episen.paas.cacheloader.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/people") // Base URL pour toutes les requêtes de ce contrôleur
@@ -20,10 +23,13 @@ public class PeopleController {
 
     private final PeopleRepository peopleRepository;
     private final RedisService redisService;
+    private final RedisService redisService;
 
     @Autowired
     public PeopleController(PeopleRepository peopleRepository, RedisService redisService) {
+    public PeopleController(PeopleRepository peopleRepository, RedisService redisService) {
         this.peopleRepository = peopleRepository;
+        this.redisService = redisService;
         this.redisService = redisService;
     }
 
