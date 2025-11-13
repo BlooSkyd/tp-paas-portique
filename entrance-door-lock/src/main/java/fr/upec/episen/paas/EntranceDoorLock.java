@@ -36,25 +36,30 @@ public class EntranceDoorLock {
                 @Override
                 public void connectionLost(Throwable cause) {
                     logger.error("Connection to MQTT broker lost: " + cause.getMessage());
+                    System.out.println("Connection to MQTT broker lost: " + cause.getMessage());
                 }
 
                 @Override
                 public void messageArrived(String topic, MqttMessage msg) throws Exception {
                     String message = new String(msg.getPayload());
                     logger.info("Door opened");
+                    System.out.println("Door opened with message: " + message);
                     Thread.sleep(5000);
                     logger.info("Door closed");
+                    System.out.println("Door closed");
                 }
 
                 @Override
                 public void deliveryComplete(IMqttDeliveryToken token) {
                     logger.info("Delivery complete for token: " + token);
+                    System.out.println("Delivery complete for token: " + token);
                 }
             });
             
             mqttClient.connect(options);
             mqttClient.subscribe(TOPIC);
             logger.info("Subscribed to topic " + TOPIC + " on broker " + brokerUrl);
+            System.out.println("Subscribed to topic " + TOPIC + " on broker " + brokerUrl);
         }
         catch (Exception e) {
             logger.error("Error in EntranceDoorLock: ", e);
