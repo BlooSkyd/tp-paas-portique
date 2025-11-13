@@ -33,7 +33,6 @@ public class StudentService {
     public StudentDTO getStudentDTO(Long id) {
         Student student = getStudent(id);
         StudentDTO studentDTO = new StudentDTO();
-        studentDTO.setNum(id);
         studentDTO.setClassName("StudentService");
         if (student != null) {
             boolean allowed = false;
@@ -41,6 +40,7 @@ public class StudentService {
             if (time.isAfter(LocalTime.of(8, 0)) && time.isBefore(LocalTime.of(21, 0))) {
                 allowed = student.isShouldOpen();
             }
+            studentDTO.setNum(student.getNum());
             studentDTO.setFirstname(student.getFirstname());
             studentDTO.setLastname(student.getLastname());
             studentDTO.setAllowed(allowed);
