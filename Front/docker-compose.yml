@@ -10,9 +10,10 @@ services:
     ports:
       - "8087:8087"
   static-server-backend:
-    build: static-server-backend
+    build:
+      context: static-server-backend
+      args:
+        - VITE_WS_URL=wss://172.31.249.144/entrance/ws
     container_name: static-server-backend
     ports:
       - "5173:80"
-    environment:
-      - VITE_WS_URL=wss://172.31.249.144/entrance/ws
