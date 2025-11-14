@@ -20,7 +20,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         sessions.add(session);
         logger.info("Client connected : " + session.getId());
         for (JsonNode jsonNode : QueueEntrance.ENTRANCES) {
-            sendMessage(jsonNode.toString());
+            session.sendMessage(new TextMessage(jsonNode.toString()));
         }
     }
 
