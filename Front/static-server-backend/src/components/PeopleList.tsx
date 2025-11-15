@@ -59,9 +59,9 @@ export function PeopleList() {
       if (trimmed) {
         const enc = encodeURIComponent(trimmed);
         // On envoie la même valeur sur firstName, lastName et num pour une recherche multi-champs
-        url = `/api/people/search?firstName=${enc}&lastName=${enc}&num=${enc}&page=${p}&size=${pageSize}`;
+        url = `/entrance/api/people/search?firstName=${enc}&lastName=${enc}&num=${enc}&page=${p}&size=${pageSize}`;
       } else {
-        url = `/api/people/paginate?page=${p}&size=${pageSize}`;
+        url = `/entrance/api/people/paginate?page=${p}&size=${pageSize}`;
       }
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
