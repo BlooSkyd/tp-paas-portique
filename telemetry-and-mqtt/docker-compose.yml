@@ -9,8 +9,6 @@ services:
       - ./mqtt/mosquitto/data:/mosquitto/data:rw
       - ./mqtt/mosquitto/log:/mosquitto/log:rw
     restart: unless-stopped
-    networks:
-      - paas-network
 
   telemetry-to-messaging-backend:
     build: ./telemetry-to-messaging-backend
@@ -22,9 +20,3 @@ services:
       - MQTT_DOOR_TOPIC=door/open
     ports:
       - "8085:8085"
-    networks:
-      - paas-network
-
-networks:
-  paas-network:
-    external: true
