@@ -43,9 +43,7 @@ public class PeopleController {
     }
 
     @GetMapping("/search")
-    public PeopleDTO searchPeople (@RequestParam(defaultValue = "") String firstName,
-                                   @RequestParam(defaultValue = "") String lastName,
-                                   @RequestParam(defaultValue = "") String num,
+    public PeopleDTO searchPeople (@RequestParam(defaultValue = "") String criteria,
                                    @RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "10") int size,
                                    @RequestParam(defaultValue = "id") String sortedBy,
@@ -59,7 +57,7 @@ public class PeopleController {
             logger.error("Error parsing page parameters", e);
             return null;
         }
-        Page<People> pagePeople = peopleService.search(firstName, lastName, num, pageRequest);
+        Page<People> pagePeople = peopleService.search(criteria.toLowerCase(), pageRequest);
         return new PeopleDTO(pagePeople.getContent(), pagePeople.getTotalPages(), pagePeople.getTotalElements());
     }
 

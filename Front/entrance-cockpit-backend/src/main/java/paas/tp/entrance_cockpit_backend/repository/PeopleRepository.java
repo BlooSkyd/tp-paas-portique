@@ -13,6 +13,6 @@ public interface PeopleRepository extends JpaRepository<People, Long> {
     @Override
     Page<People> findAll(Pageable pageable);
 
-    @Query("Select p from People p where (:firstName is null or p.firstName like %:firstName%) and (:lastName is null or p.lastName like %:lastName%) and (:num is null or p.num like %:num%)")
-    Page<People> search(@Param("firstName") String firstName, @Param("lastName") String lastName, @Param("num") String num, Pageable pageable);
+    @Query("SELECT p FROM People p WHERE (:q IS NULL OR lower(p.firstName) LIKE %:q% OR lower(p.lastName) LIKE %:q% OR lower(p.num) LIKE %:q%)")
+    Page<People> search(@Param("q") String query, Pageable pageable);
 }

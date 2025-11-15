@@ -22,7 +22,7 @@ public class PeopleService {
         return peopleRepository.findAll(pageable);
     }
 
-    public Page<People> search(String firstName, String lastName, String num, Pageable pageable) {return peopleRepository.search(firstName, lastName, num,  pageable);}
+    public Page<People> search(String criteria, Pageable pageable) {return peopleRepository.search(criteria,  pageable);}
 
 
 }

@@ -14,11 +14,9 @@ export interface People {
 }
 
 interface PageResponse {
-  content?: People[];
-  totalElements?: number;
+  people?: People[];
+  totalPeople?: number;
   totalPages?: number;
-  size?: number;
-  number?: number; // page index
 }
 
 export function PeopleList() {
@@ -58,8 +56,7 @@ export function PeopleList() {
       let url: string;
       if (trimmed) {
         const enc = encodeURIComponent(trimmed);
-        // On envoie la même valeur sur firstName, lastName et num pour une recherche multi-champs
-        url = `/entrance/api/people/search?firstName=${enc}&lastName=${enc}&num=${enc}&page=${p}&size=${pageSize}`;
+        url = `/entrance/api/people/search?criteria=${enc}&page=${p}&size=${pageSize}`;
       } else {
         url = `/entrance/api/people/paginate?page=${p}&size=${pageSize}`;
       }
@@ -71,10 +68,10 @@ export function PeopleList() {
         // Cas simple : le backend renvoie directement les personnes
         setPeople(data);
         setTotalPages(Math.ceil(data.length / pageSize));
-      } else if (data && data.content) {
+      } else if (data && data.people) {
         // Cas Spring Data 
         const pageResp = data as PageResponse;
-        setPeople(pageResp.content || []);
+        setPeople(pageResp.people || []);
         setTotalPages(typeof pageResp.totalPages === 'number' ? pageResp.totalPages : null);
       } else {
         // Fallback 
@@ -192,8 +189,6 @@ export function PeopleList() {
           >Suivant</button>
         </div>
       </div>
-
-      <div className="mt-2 text-xs text-gray-500">Note: endpoints utilisés: <code>/api/people/paginate?page=&lt;index&gt;&amp;size=10</code> et <code>/api/people/search?firstName=&lt;q&gt;&amp;lastName=&lt;q&gt;&amp;num=&lt;q&gt;&amp;page=&lt;index&gt;&amp;size=10</code>. Si votre backend expose un chemin différent, adaptez le fetch dans <code>PeopleList.tsx</code>.</div>
     </div>
   );
 }
