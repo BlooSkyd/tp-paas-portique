@@ -22,7 +22,7 @@ public class EntranceDoorLock {
 
     public static void main(String[] args) {
         if (HOST == null || PORT == null || TOPIC == null) {
-            logger.error("Environment variables for MQTT broker are not set.");
+            System.out.println("Environment variables for MQTT broker are not set.");
             return;
         }
 
@@ -54,7 +54,7 @@ public class EntranceDoorLock {
             mqttClient.setCallback(new MqttCallback() {
                 @Override
                 public void connectionLost(Throwable cause) {
-                    logger.error("Connection to MQTT broker lost: " + cause.getMessage());
+                    System.out.println("Connection to MQTT broker lost: " + cause.getMessage());
                 }
 
                 @Override
@@ -63,26 +63,26 @@ public class EntranceDoorLock {
                     ObjectMapper objectMapper = new ObjectMapper();
                     boolean shouldOpen = objectMapper.readTree(message).get("shouldOpen").asBoolean();
                     if (shouldOpen) {
-                        logger.warn("Door opened");
+                        System.out.print("Door opened");
                         Thread.sleep(3000);
-                        logger.warn("Door closed");
+                        System.out.println("Door closed");
                     }
                 }
 
                 @Override
                 public void deliveryComplete(IMqttDeliveryToken token) {
-                    logger.warn("Delivery complete for token: " + token);
+                    System.out.println("Delivery complete for token: " + token);
                 }
             });
 
             mqttClient.connect(options);
             mqttClient.subscribe(TOPIC);
-            logger.warn("Subscribed to topic " + TOPIC + " on broker " + brokerUrl);
+            System.out.println("Subscribed to topic " + TOPIC + " on broker " + brokerUrl);
             while(true) {
                 Thread.sleep(1000);
             }
         } catch (Exception e) {
-            logger.error("Error in EntranceDoorLock: ", e);
+            System.out.println("Error in EntranceDoorLock: " + e.getMessage());
         }
     }
 }
