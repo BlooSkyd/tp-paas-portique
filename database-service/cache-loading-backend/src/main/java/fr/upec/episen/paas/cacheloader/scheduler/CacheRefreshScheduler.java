@@ -27,6 +27,14 @@ public class CacheRefreshScheduler {
 
     private static boolean dbHasBeenUpdated = false;
 
+    private static final String DOUBLE_QUOTE = "\"";
+
+    private static final String FIRSTNAME = DOUBLE_QUOTE + "firstname" +DOUBLE_QUOTE;
+    private static final String LASTNAME = DOUBLE_QUOTE + "lastname" +DOUBLE_QUOTE;
+    private static final String ISAUTHORISED = DOUBLE_QUOTE + "isAuthorized" +DOUBLE_QUOTE;
+    private static final String NUM = DOUBLE_QUOTE + "num" +DOUBLE_QUOTE;
+
+
 
     @Autowired
     public CacheRefreshScheduler(PeopleRepository peopleRepository, RedisService redisService) {
@@ -54,22 +62,24 @@ public class CacheRefreshScheduler {
             List<People> deniedPeople = peopleRepository.findAllNotAllowedNow();
             
             // TODO: Mapper (stream?) sur des hashmap (cf doc redis) avec pour clé l'ID
-            Map<String, Map<String, String>> lmap = new HashMap<>();
+            Map<Long, Map<String, String>> lmap = new HashMap<>();
 
             for (People people : allowedPeople) {
                 Map<String, String> ap = new HashMap<>();
-                ap.put("firstname", people.getFirstName());
-                ap.put("lastname", people.getLastName());
-                ap.put("isAuthorized", "true");
-                lmap.put(people.getNum(), ap);
+                ap.put(FIRSTNAME, DOUBLE_QUOTE+people.getFirstName()+DOUBLE_QUOTE);
+                ap.put(LASTNAME, DOUBLE_QUOTE+people.getLastName()+DOUBLE_QUOTE);
+                ap.put(ISAUTHORISED, DOUBLE_QUOTE+"true"+DOUBLE_QUOTE);
+                ap.put(NUM, DOUBLE_QUOTE+people.getNum()+DOUBLE_QUOTE);
+                lmap.put(people.getId(), ap);
             }
 
             for (People people : deniedPeople) {
                 Map<String, String> ap = new HashMap<>();
-                ap.put("firstname", people.getFirstName());
-                ap.put("lastname", people.getLastName());
-                ap.put("isAuthorized", "false");
-                lmap.put(people.getNum(), ap);
+                ap.put(FIRSTNAME, DOUBLE_QUOTE+people.getFirstName()+DOUBLE_QUOTE);
+                ap.put(LASTNAME, DOUBLE_QUOTE+people.getLastName()+DOUBLE_QUOTE);
+                ap.put(ISAUTHORISED, DOUBLE_QUOTE+"false"+DOUBLE_QUOTE);
+                ap.put(NUM, DOUBLE_QUOTE+people.getNum()+DOUBLE_QUOTE);
+                lmap.put(people.getId(), ap);
             }
 
             

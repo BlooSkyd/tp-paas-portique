@@ -33,13 +33,13 @@ public class RedisService {
      * Écrit la liste des personnes autorisées dans Redis
      * @param people Liste des personnes à stocker
      */
-    public void saveAllowedPeople(Map<String, Map<String, String>> people) {
+    public void saveAllowedPeople(Map<Long, Map<String, String>> people) {
         try {
             // Supprime l'ancienne liste
             redisTemplate.delete(ALLOWED_PEOPLE_KEY);
             
             // Stocke chaque personne avec un index
-            for (String key : people.keySet()) {
+            for (Long key : people.keySet()) {
                 redisTemplate.opsForValue().append(STUDENT_KEY+key, people.get(key).toString());
             }
             
