@@ -36,7 +36,7 @@ public class RedisService {
     public void saveAllowedPeople(Map<Long, Map<String, String>> people) {
         try {
             // Supprime l'ancienne liste
-            redisTemplate.delete(ALLOWED_PEOPLE_KEY);
+            redisTemplate.delete(STUDENT_KEY);
             
             // Stocke chaque personne avec un index
             for (Long key : people.keySet()) {
@@ -48,10 +48,7 @@ public class RedisService {
                 ALLOWED_PEOPLE_TIMESTAMP_KEY, 
                 LocalDateTime.now().format(formatter)
             );
-            
-            // Les données restent dans Redis indéfiniment (ou définissez une TTL si nécessaire)
-            // redisTemplate.expire(ALLOWED_PEOPLE_KEY, 1, TimeUnit.HOURS); // Optionnel
-            
+                        
             System.out.println("[Redis] Sauvegardé " + people.size() + " personnes autorisées");
         } catch (Exception e) {
             System.err.println("[Redis] Erreur lors de la sauvegarde : " + e.getMessage());
