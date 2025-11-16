@@ -11,11 +11,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 @Component
 @EnableScheduling
@@ -26,14 +24,6 @@ public class CacheRefreshScheduler {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private static boolean dbHasBeenUpdated = false;
-
-    private static final String DOUBLE_QUOTE = "\"";
-
-    private static final String FIRSTNAME = DOUBLE_QUOTE + "firstname" +DOUBLE_QUOTE;
-    private static final String LASTNAME = DOUBLE_QUOTE + "lastname" +DOUBLE_QUOTE;
-    private static final String ISAUTHORISED = DOUBLE_QUOTE + "isAuthorized" +DOUBLE_QUOTE;
-    private static final String NUM = DOUBLE_QUOTE + "num" +DOUBLE_QUOTE;
-
 
 
     @Autowired
@@ -60,33 +50,32 @@ public class CacheRefreshScheduler {
             // Récupère les personnes autorisées (équivalent de getPersonAllowed())
             List<People> allowedPeople = peopleRepository.findAllAllowedNow();
             List<People> deniedPeople = peopleRepository.findAllNotAllowedNow();
-            
-            // TODO: Mapper (stream?) sur des hashmap (cf doc redis) avec pour clé l'ID
-            Map<Long, Map<String, String>> lmap = new HashMap<>();
 
+            Map<String, Student> students = new HashMap<>();
+            
             for (People people : allowedPeople) {
-                Map<String, String> ap = new HashMap<>();
-                ap.put(FIRSTNAME, DOUBLE_QUOTE+people.getFirstName()+DOUBLE_QUOTE);
-                ap.put(LASTNAME, DOUBLE_QUOTE+people.getLastName()+DOUBLE_QUOTE);
-                ap.put(ISAUTHORISED, DOUBLE_QUOTE+"true"+DOUBLE_QUOTE);
-                ap.put(NUM, DOUBLE_QUOTE+people.getNum()+DOUBLE_QUOTE);
-                lmap.put(people.getId(), ap);
+                Student s = new Student();
+                s.setFirstname(people.getFirstName());
+                s.setLastname(people.getLastName());
+                s.setNum(people.getNum());
+                s.setIsAuthorized("true");
+                students.put(people.getId().toString(), s);
             }
 
             for (People people : deniedPeople) {
-                Map<String, String> ap = new HashMap<>();
-                ap.put(FIRSTNAME, DOUBLE_QUOTE+people.getFirstName()+DOUBLE_QUOTE);
-                ap.put(LASTNAME, DOUBLE_QUOTE+people.getLastName()+DOUBLE_QUOTE);
-                ap.put(ISAUTHORISED, DOUBLE_QUOTE+"false"+DOUBLE_QUOTE);
-                ap.put(NUM, DOUBLE_QUOTE+people.getNum()+DOUBLE_QUOTE);
-                lmap.put(people.getId(), ap);
+                Student s = new Student();
+                s.setFirstname(people.getFirstName());
+                s.setLastname(people.getLastName());
+                s.setNum(people.getNum());
+                s.setIsAuthorized("false");
+                students.put(people.getId().toString(), s);
             }
 
             
             // Écrit dans Redis
-            redisService.saveAllowedPeople(lmap);
+            redisService.saveAllowedPeople(students);
             
-            System.out.println("[Scheduler] ✓ Cache mis à jour avec " + lmap.size() + " personnes");
+            System.out.println("[Scheduler] ✓ Cache mis à jour avec " + students.size() + " personnes");
             dbHasBeenUpdated = false;
         } catch (Exception e) {
             System.err.println("[Scheduler] ✗ Erreur lors du rafraîchissement : " + e.getMessage());
