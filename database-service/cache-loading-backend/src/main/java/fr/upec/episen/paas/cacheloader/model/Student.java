@@ -8,16 +8,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Student {
-    private Long num;
+    private String num;
     private String firstname;
     private String lastname;
-    private boolean shouldOpen;
+    private String isAuthorized;
 
-    public Long getNum() {
+    public String getNum() {
         return num;
     }
 
-    public void setNum(Long num) {
+    public void setNum(String num) {
         this.num = num;
     }
 
@@ -37,11 +37,11 @@ public class Student {
         this.lastname = lastname;
     }
 
-    public boolean isShouldOpen() {
-        return shouldOpen;
+    public String isShisAuthorizedouldOpen() {
+        return isAuthorized;
     }
 
-    public void setShouldOpen(boolean shouldOpen) {
-        this.shouldOpen = shouldOpen;
+    public void setIsAuthorized(String isAuthorized) {
+        this.isAuthorized = isAuthorized;
     }
 }
