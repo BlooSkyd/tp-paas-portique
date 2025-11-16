@@ -64,8 +64,9 @@ public class EntranceDoorLock {
                     boolean shouldOpen = objectMapper.readTree(message).get("shouldOpen").asBoolean();
                     String doorId = objectMapper.readTree(message).get("doorId").asText();
                     if (shouldOpen) {
-                        System.out.print("Door n°" + doorId + " opened");
+                        System.out.println("Door n°" + doorId + " opened");
                         Thread.sleep(3000);
+                        System.out.flush();
                         System.out.println("Door n°" + doorId + " closed");
                     }
                 }
