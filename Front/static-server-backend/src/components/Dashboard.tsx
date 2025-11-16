@@ -9,11 +9,15 @@ interface DashboardProps {
 
 export function Dashboard({ logs }: DashboardProps) {
   const [isOpening, setIsOpening] = useState(false);
-
+  const [doorId , setDoorId] = useState(0);
   const handleOpenDoor = async () => {
+    if (doorId === 0) {
+      alert("Veuillez spécifier quelle porte vous voulez ouvrir");
+      return;
+    }
     setIsOpening(true);
     try {
-      const success = await DoorService.openDoor();
+      const success = await DoorService.openDoor(doorId.toString());
       if (success) {
         console.log('Door opened successfully');
       } else {
@@ -36,26 +40,35 @@ export function Dashboard({ logs }: DashboardProps) {
             onClick={handleOpenDoor}
             disabled={isOpening}
             className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all ${
-              isOpening 
-                ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-green-600 hover:bg-green-700 text-white'
+                isOpening
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-green-600 hover:bg-green-700 text-white'
             }`}
           >
-            <DoorOpen className="w-4 h-4" />
+            <DoorOpen className="w-4 h-4"/>
             <span>{isOpening ? 'Ouverture...' : 'Ouvrir Porte'}</span>
           </button>
-          
+          <input
+            type="number"
+            min="1"
+            max="4"
+            step="1"
+            onChange={(e) => setDoorId(parseInt(e.target.value))}
+            placeholder="Id porte"
+            className="px-2 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-green-500"
+            style={{ width: '100px'}}
+          />
           <div className="flex items-center space-x-2"></div>
-          <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse" />
+          <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse"/>
           <span className="text-sm text-gray-500">Live</span>
         </div>
       </div>
 
       <div className="space-y-3">
         {logs.length === 0 ? (
-          <div className="text-center py-12 text-gray-400">
-            En attente de données...
-          </div>
+            <div className="text-center py-12 text-gray-400">
+              En attente de données...
+            </div>
         ) : (
           logs.map((log) => (
             <div

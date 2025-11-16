@@ -1,29 +1,10 @@
-import { Activity, Wifi, WifiOff, DoorOpen } from 'lucide-react';
-import { DoorService } from './DoorService';
-import { useState } from 'react';
+import { Activity, Wifi, WifiOff } from 'lucide-react';
 
 interface HeaderProps {
   isConnected: boolean;
 }
 
 export function Header({ isConnected }: HeaderProps) {
-  const [isOpening, setIsOpening] = useState(false);
-
-  const handleOpenDoor = async () => {
-    setIsOpening(true);
-    try {
-      const success = await DoorService.openDoor();
-      if (success) {
-        console.log('Door opened successfully');
-      } else {
-        console.error('Failed to open door');
-      }
-    } catch (error) {
-      console.error('Error opening door:', error);
-    } finally {
-      setIsOpening(false);
-    }
-  };
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -44,20 +25,6 @@ export function Header({ isConnected }: HeaderProps) {
           </div>
 
           <div className="flex items-center space-x-4">
-            {/* Bouton d'ouverture dans le header */}
-            <button
-              onClick={handleOpenDoor}
-              disabled={isOpening}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                isOpening 
-                  ? 'bg-gray-400 cursor-not-allowed' 
-                  : 'bg-green-600 hover:bg-green-700 text-white'
-              }`}
-            >
-              <DoorOpen className="w-4 h-4" />
-              <span>{isOpening ? '...' : 'Ouvrir Porte'}</span>
-            </button>
-
             <div className="flex items-center space-x-2">
               {isConnected ? (
                 <>
