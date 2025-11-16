@@ -18,10 +18,11 @@ public class DoorService {
     @Autowired
     private KafkaTemplate<String, ObjectNode> kafkaTemplate;
 
-    public boolean openDoor() {
+    public boolean openDoor(String id) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode jsonNode = mapper.createObjectNode();
+            jsonNode.put("doorId", id);
             jsonNode.put("allowed", true);
             jsonNode.put("service", "entrance-cockpit-backend");
             jsonNode.put("timestamp", System.currentTimeMillis());

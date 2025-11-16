@@ -1,7 +1,7 @@
 export class DoorService {
-  static async openDoor(): Promise<boolean> {
+  static async openDoor(doorId: string): Promise<boolean> {
     try {
-      const response = await fetch('/entrance/api/door/open', {
+      const response = await fetch('/entrance/api/door/open/' + doorId, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
