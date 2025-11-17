@@ -23,7 +23,7 @@ public class CacheRefreshScheduler {
     private final RedisService redisService;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    private static boolean dbHasBeenUpdated = false;
+    // Removed gating flag; scheduler runs periodically now.
 
 
     @Autowired
@@ -41,10 +41,11 @@ public class CacheRefreshScheduler {
      */
     @Scheduled(fixedRate = 30000)
     private void refreshPeopleCache() {
+        /*
         if (!dbHasBeenUpdated) {
-            System.out.println("[Scheduler] Pas de modifications détectée, retry dans 5min...");
             return;
         }
+            */
         try {
             System.out.println("[Scheduler] " + LocalDateTime.now().format(formatter) + " - Rafraîchissement du cache Redis...");
             
@@ -75,9 +76,10 @@ public class CacheRefreshScheduler {
             
             // Écrit dans Redis
             redisService.saveAllowedPeople(students);
-            
+    
+
             System.out.println("[Scheduler] ✓ Cache mis à jour avec " + students.size() + " personnes");
-            dbHasBeenUpdated = false;
+            //dbHasBeenUpdated = false;
         } catch (Exception e) {
             System.err.println("[Scheduler] ✗ Erreur lors du rafraîchissement : " + e.getMessage());
             e.printStackTrace();
@@ -90,12 +92,15 @@ public class CacheRefreshScheduler {
      */
     @Scheduled(initialDelay = 5000)
     private void initializeCache() {
-        dbHasBeenUpdated = true;
+        //dbHasBeenUpdated = true;
         System.out.println("[Scheduler] Application démarrée, initialisation du cache...");
         refreshPeopleCache();
     }
 
     public void tableHasBeenUpdated() {
-        dbHasBeenUpdated = true;
+        System.out.println("[Scheduler] Notification reçue : mise à jour de la table, déclenchement immédiat...");
+        //dbHasBeenUpdated = true;
+        // Trigger an immediate refresh in a background thread
+        new Thread(this::refreshPeopleCache).start();
     }
 }
