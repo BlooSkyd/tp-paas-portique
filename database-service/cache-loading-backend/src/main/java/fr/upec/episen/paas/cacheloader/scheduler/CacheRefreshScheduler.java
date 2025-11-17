@@ -24,6 +24,7 @@ public class CacheRefreshScheduler {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     // Removed gating flag; scheduler runs periodically now.
+    private static boolean dbHasBeenUpdated = false;
 
 
     @Autowired
@@ -41,11 +42,11 @@ public class CacheRefreshScheduler {
      */
     @Scheduled(fixedRate = 30000)
     private void refreshPeopleCache() {
-        /*
+        
         if (!dbHasBeenUpdated) {
+            System.out.println("[Scheduler] " + LocalDateTime.now().format(formatter) + " - Pas de changement enregistré, retry dans 30s...");
             return;
         }
-            */
         try {
             System.out.println("[Scheduler] " + LocalDateTime.now().format(formatter) + " - Rafraîchissement du cache Redis...");
             
@@ -92,15 +93,15 @@ public class CacheRefreshScheduler {
      */
     @Scheduled(initialDelay = 5000)
     private void initializeCache() {
-        //dbHasBeenUpdated = true;
+        dbHasBeenUpdated = true;
         System.out.println("[Scheduler] Application démarrée, initialisation du cache...");
         refreshPeopleCache();
     }
 
     public void tableHasBeenUpdated() {
         System.out.println("[Scheduler] Notification reçue : mise à jour de la table, déclenchement immédiat...");
-        //dbHasBeenUpdated = true;
+        dbHasBeenUpdated = true;
         // Trigger an immediate refresh in a background thread
-        new Thread(this::refreshPeopleCache).start();
+        //new Thread(this::refreshPeopleCache).start();
     }
 }
