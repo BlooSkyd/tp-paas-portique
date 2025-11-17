@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -37,7 +39,7 @@ public class RedisService {
      */
     public void saveAllowedPeople(Map<String, Student> studentsMap) {
         try {
-
+            Instant start = Instant.now();
 
             redisTemplate.getConnectionFactory().getConnection().flushAll();
             
@@ -46,7 +48,6 @@ public class RedisService {
 
             // Sérialise chaque Student en JSON et stocke dans Redis sur l'index du people
             for (String studentId : studentsMap.keySet()) {
-                
                 String jsonStudent = objectMapper.writeValueAsString(studentsMap.get(studentId));
                 JsonNode node = objectMapper.readTree(jsonStudent);
                 redisTemplate.opsForValue().set(STUDENT_KEY+":"+studentId, node);
@@ -58,7 +59,12 @@ public class RedisService {
                 LocalDateTime.now().format(formatter)
             );
             
-            System.out.println("[Redis] Sauvegardé " + studentsMap.size() + " personnes autorisées");
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();
+            
+            System.out.println("[Redis] Sauvegardé " + studentsMap.size() + " personnes autorisées");           
+            System.out.println("[Redis] Mis à jour en " + timeElapsed + "ms");
+            
         } catch (Exception e) {
             System.err.println("[Redis] Erreur lors de la sauvegarde : " + e.getMessage());
             e.printStackTrace();

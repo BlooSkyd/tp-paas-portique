@@ -40,7 +40,7 @@ public class CacheRefreshScheduler {
      * - 300000 ms = 5 minutes
      * - 900000 ms = 15 minutes
      */
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRate = 300000)
     private void refreshPeopleCache() {
         /*
         if (!dbHasBeenUpdated) {
