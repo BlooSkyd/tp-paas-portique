@@ -20,6 +20,7 @@ public class PeopleTriggerController {
      */
     @PostMapping("/cache/refresh")
     public void refreshCache() {
+        System.out.println("[Controlleur] Changements détectés, plannification d'une mise à jour...");
         crs.tableHasBeenUpdated();
     }
 }

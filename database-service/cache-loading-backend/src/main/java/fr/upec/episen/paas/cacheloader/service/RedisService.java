@@ -43,7 +43,7 @@ public class RedisService {
                 redisTemplate.delete(STUDENT_KEY+":"+studentId);
                 
                 String jsonStudent = objectMapper.writeValueAsString(studentsMap.get(studentId));
-                redisTemplate.opsForValue().append(STUDENT_KEY+":"+studentId, jsonStudent);
+                redisTemplate.opsForValue().set(STUDENT_KEY+":"+studentId, jsonStudent);
             }
             
             // Enregistre le timestamp de la mise à jour

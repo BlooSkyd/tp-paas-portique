@@ -42,6 +42,7 @@ public class CacheRefreshScheduler {
     @Scheduled(fixedRate = 30000)
     private void refreshPeopleCache() {
         if (!dbHasBeenUpdated) {
+            System.out.println("[Scheduler] Pas de modifications détectée, retry dans 5min...");
             return;
         }
         try {
