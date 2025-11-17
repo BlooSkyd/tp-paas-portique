@@ -56,7 +56,7 @@ public class BadgeSensorMock {
             //System.out.println("After connnection");
             Random random = new Random();
             while (true) {
-                long studentId = random.nextInt(100);
+                long studentId = random.nextInt(100) + 1;
                 long doorId = random.nextInt(4) + 1;
                 String payload = "{\"studentId\":" + studentId + ",\"doorId\":" + doorId + "}";
                 MqttMessage message = new MqttMessage(payload.getBytes());
