@@ -90,7 +90,7 @@ export function Dashboard({logs}: DashboardProps) {
                 ) : (
                     logs.map((log) => (
                         <div
-                            key={log.num}
+                            key={`${log.num ?? 'manual'}-${log.timestamp}`}
                             className={`p-4 rounded-lg border-l-4 transition-all duration-300 ${
                                 log.allowed
                                     ? 'bg-green-50 border-green-600 hover:bg-green-100'
