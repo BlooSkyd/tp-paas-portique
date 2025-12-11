@@ -10,7 +10,7 @@ UNKNOWN_FACE_PATH = os.path.join(UPLOAD_DIR, "Unknown.jpg")
 
 @app.get("/faces/{filename}")
 async def get_image(filename: str):
-    file_path = os.path.join(UPLOAD_DIR, filename)
+    file_path = os.path.join(UPLOAD_DIR, f"{filename}.jpg")
     if not os.path.exists(file_path):
         if not os.path.exists(UNKNOWN_FACE_PATH):
             return {"error": "image not found"}

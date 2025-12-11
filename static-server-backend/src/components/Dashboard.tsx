@@ -112,7 +112,7 @@ export function Dashboard({ logs }: DashboardProps) {
                       <span>Porte: {log.doorId}</span>
                       <span>{new Date(log.timestamp).toLocaleTimeString('fr-FR')}</span>
                       <img
-                          src={`/images/${log.num}.jpg`}
+                          src={`/images/${log.num}`}
                           alt={`Photo Badge ${log.num}`}
                           width={50}
                           height={50}

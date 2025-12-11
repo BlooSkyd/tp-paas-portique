@@ -147,7 +147,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - photo-storage-data:/var/www/uploads
+      - /var/www/faces:/var/www/faces
     deploy:
       placement:
         constraints:
@@ -157,7 +157,6 @@ volumes:
   redis_data:
   mqtt_data:
   mqtt_log:
-  photo-storage-data:
 
 secrets:
   postgres_password:
