@@ -58,10 +58,10 @@ jobs:
           docker build -t smailliwdocker/badge-sensor-mock:latest ./badge-sensor-mock
           docker push smailliwdocker/badge-sensor-mock:latest
 
-      - name: Build and push entrance-door-mock image
+      - name: Build and push entrance-door-lock image
         run: |
-          docker build -t smailliwdocker/entrance-door-mock:latest ./entrance-door-mock
-          docker push smailliwdocker/entrance-door-mock:latest
+          docker build -t smailliwdocker/entrance-door-lock:latest ./entrance-door-lock
+          docker push smailliwdocker/entrance-door-lock:latest
 
       - name: Deploy stack to Swarm
         run: |
