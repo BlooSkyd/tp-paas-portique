@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev
+      - watchdog
 
 jobs:
   build-and-deploy:
@@ -47,6 +48,15 @@ jobs:
           docker build -t smailliwdocker/telemetry-to-messaging-backend:latest ./telemetry-to-messaging-backend
           docker push smailliwdocker/telemetry-to-messaging-backend:latest
 
+      - name : Build and push back-one image
+        run : |
+          docker build -t smailliwdocker/back-one:latest ./back-one
+          docker push smailliwdocker/back-one:latest
+
+      - name : Build and push watchdog image
+        run : |
+          docker build -t smailliwdocker/watchdog:latest ./watchdog
+          docker push smailliwdocker/watchdog:latest
 
       - name: Deploy stack to Swarm
         run: |

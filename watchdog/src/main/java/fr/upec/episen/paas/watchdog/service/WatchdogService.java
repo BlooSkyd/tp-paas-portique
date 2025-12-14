@@ -4,38 +4,74 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
+
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class WatchdogService {
 
+    private static final Logger log = LogManager.getLogger(WatchdogService.class);
     private final List<String> cores;
-    private final Logger logger = LogManager.getLogger(WatchdogService.class);
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public WatchdogService(List<String> cores) {
-        this.cores = cores;
-        logger.info("Loaded cores from config: {}", cores);
-        System.out.println("Loaded cores from config: " + cores);
+    @Scheduled(fixedDelay = 5000)
+    public void monitor() {
+        for (String host : cores) {
+            String port = System.getenv("CORE_PORT");
+            String container = System.getenv("CORE_NAME");
+
+            String url = "http://" + host + ":" + port + "/admin/health";
+
+            if (isUp(url)) {
+                log.info("{} is UP", host);
+            } else {
+                log.warn("{} is DOWN → restarting container", host);
+                restartDocker(host, container);
+            }
+        }
     }
 
-    @Scheduled(fixedDelay = 1000)
-    public void poll() {
-        for (String core : cores) {
-            try {
-                ResponseEntity<String> response = restTemplate.getForEntity(core + "/operational_backend/admin/health", String.class);
+    private boolean isUp(String url) {
+        try {
+            restTemplate.getForEntity(url, String.class);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
-                boolean up = response.getStatusCode().is2xxSuccessful();
+    private void restartDocker(String host, String container) {
+        try {
+            JSch jsch = new JSch();
+            jsch.addIdentity(System.getenv("SSH_PRIVATE_KEY"));
 
-                logger.info("Polled {} → {}", core, up ? "UP" : "DOWN");
-                System.out.println("Polled " + core + " → " + (up ? "UP" : "DOWN"));
-            } catch (Exception e) {
-                logger.warn("Core {} unreachable", core);
-                System.out.println("Core " + core + " unreachable");
+            Session session = jsch.getSession(System.getenv("SSH_USER"), host, 22);
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.connect(3000);
+
+            ChannelExec channel = (ChannelExec) session.openChannel("exec");
+            channel.setCommand("docker restart " + container);
+            channel.setErrStream(System.err);
+            channel.connect();
+
+            while (!channel.isClosed()) {
+                Thread.sleep(100);
             }
+
+            log.info("Restart {} on {} exit code {}", container, host, channel.getExitStatus());
+
+            channel.disconnect();
+            session.disconnect();
+        } catch (Exception e) {
+            log.error("SSH restart failed for " + host, e);
         }
     }
 }

@@ -8,32 +8,43 @@ networks:
   mqtt-and-telemetry-network:
     driver: overlay
 
-services:
-  redis-cache:
-    image: redis:8
+  back-one:
+    image: smailliwdocker/back-one:latest
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: 192.168.248.103:9092
+      shared_file_path: /sharedFiles/core_status.yml
     ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - core-and-redis-network
+      - "8080:8080"
     deploy:
       placement:
         constraints:
-          - node.labels.role == core-redis
+          - node.labels.role == back-one
 
-  core-operational-backend:
+  watchdog:
+    image: smailliwdocker/watchdog:latest
+    environment:
+      CORE_PORT: 8080
+      CORE_NAME: core-operational-backend
+      shared_file_path: /sharedFiles/core_status.yml
+      SSH_USER: ipaas
+      SSH_PRIVATE_KEY: /keys/ssh_id25519
+    volumes:
+      - /home/ipaas/.ssh/:/keys:ro
+      - shared_files:/sharedFiles:ro
+    port:s:
+      - "8080:8080"
+    deploy:
+      placement:
+        constraints:
+          - node.labels.role == watchdog
+
+  core-redis:
     image: smailliwdocker/core-operational-backend:latest
     environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: 192.168.248.103:9092
-      SPRING_DATA_REDIS_HOST: redis-cache
+      SPRING_DATA_REDIS_HOST: localhost
       SPRING_DATA_REDIS_PORT: 6379
     ports:
-      - "8080:8080"
-    #depends_on:
-     # - redis-cache
-    networks:
-      - core-and-redis-network
+      - "8081:8080"
     deploy:
       placement:
         constraints:

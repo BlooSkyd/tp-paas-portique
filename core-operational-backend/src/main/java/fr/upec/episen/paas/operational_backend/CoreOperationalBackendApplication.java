@@ -1,4 +1,4 @@
-package fr.upec.episen.paas.core_operational_backend;
+package fr.upec.episen.paas.operational_backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
