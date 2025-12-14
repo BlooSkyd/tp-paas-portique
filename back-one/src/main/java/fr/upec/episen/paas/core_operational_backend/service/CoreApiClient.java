@@ -52,7 +52,7 @@ public class CoreApiClient {
 
     private StudentDTO callCore(String baseUrl, Long id) {
         return webClient.get()
-                .uri(baseUrl + ":8080/operational_backend/student/" + id)
+                .uri(baseUrl + ":" + System.getenv("CORE_PORT") + "/operational_backend/student/" + id)
                 .retrieve()
                 .bodyToMono(StudentDTO.class)
                 .block();

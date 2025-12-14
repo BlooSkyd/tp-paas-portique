@@ -12,7 +12,7 @@ public class EndpointProvider {
     private final List<String> endpoints;
 
     public EndpointProvider() throws IOException {
-        this.endpoints = Files.readAllLines(Path.of(System.getenv("shared_file_path")));
+        this.endpoints = Files.readAllLines(Path.of(System.getenv("SHARED_FILE_PATH")));
     }
 
     public String getPrimary() {

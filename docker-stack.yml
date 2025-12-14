@@ -13,7 +13,8 @@ services:
     image: smailliwdocker/back-one:latest
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: 192.168.248.103:9092
-      shared_file_path: /sharedFiles/core_status.yml
+      SHARED_FILE_PATH: /sharedFiles/core_status.yml
+      CORE_PORT: 8088
     configs:
       - source: core_status_v1
         target: /sharedFiles/core_status.yml
@@ -29,7 +30,7 @@ services:
     environment:
       CORE_PORT: 8088
       CORE_NAME: core-redis
-      shared_file_path: /sharedFiles/core_status.yml
+      SHARED_FILE_PATH: /sharedFiles/core_status.yml
       SSH_USER: ipaas
       SSH_PRIVATE_KEY: /keys/id_rsa_watchdog
     volumes:
