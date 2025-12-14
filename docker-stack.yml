@@ -8,13 +8,17 @@ networks:
   mqtt-and-telemetry-network:
     driver: overlay
 
+services:
   back-one:
     image: smailliwdocker/back-one:latest
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: 192.168.248.103:9092
       shared_file_path: /sharedFiles/core_status.yml
+    configs:
+      - source: core_status_v1
+        target: /sharedFiles/core_status.yml
     ports:
-      - "8080:8080"
+      - "8089:8080"
     deploy:
       placement:
         constraints:
@@ -23,16 +27,18 @@ networks:
   watchdog:
     image: smailliwdocker/watchdog:latest
     environment:
-      CORE_PORT: 8080
-      CORE_NAME: core-operational-backend
+      CORE_PORT: 8088
+      CORE_NAME: core-redis
       shared_file_path: /sharedFiles/core_status.yml
       SSH_USER: ipaas
-      SSH_PRIVATE_KEY: /keys/ssh_id25519
+      SSH_PRIVATE_KEY: /keys/id_rsa_watchdog
     volumes:
       - /home/ipaas/.ssh/:/keys:ro
-      - shared_files:/sharedFiles:ro
-    port:s:
-      - "8080:8080"
+    configs:
+      - source: core_status_v1
+        target: /sharedFiles/core_status.yml
+    ports:
+      - "8090:8080"
     deploy:
       placement:
         constraints:
@@ -44,7 +50,7 @@ networks:
       SPRING_DATA_REDIS_HOST: localhost
       SPRING_DATA_REDIS_PORT: 6379
     ports:
-      - "8081:8080"
+      - "8088:8080"
     deploy:
       placement:
         constraints:
@@ -170,4 +176,6 @@ configs:
   nginx_conf_v1:
     external: true
   mosquitto_conf_v1:
+    external: true
+  core_status_v1:
     external: true

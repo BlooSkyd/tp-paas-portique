@@ -49,29 +49,36 @@ public class WatchdogService {
     }
 
     private void restartDocker(String host, String container) {
-        try {
-            JSch jsch = new JSch();
-            jsch.addIdentity(System.getenv("SSH_PRIVATE_KEY"));
-
-            Session session = jsch.getSession(System.getenv("SSH_USER"), host, 22);
-            session.setConfig("StrictHostKeyChecking", "no");
-            session.connect(3000);
-
-            ChannelExec channel = (ChannelExec) session.openChannel("exec");
-            channel.setCommand("docker restart " + container);
-            channel.setErrStream(System.err);
-            channel.connect();
-
-            while (!channel.isClosed()) {
-                Thread.sleep(100);
-            }
-
-            log.info("Restart {} on {} exit code {}", container, host, channel.getExitStatus());
-
-            channel.disconnect();
-            session.disconnect();
-        } catch (Exception e) {
-            log.error("SSH restart failed for " + host, e);
+    try {
+        String privateKeyPath = System.getenv("SSH_PRIVATE_KEY");
+        if (privateKeyPath == null) {
+            log.error("SSH_PRIVATE_KEY not set");
+            return;
         }
+
+        JSch jsch = new JSch();
+        jsch.addIdentity(privateKeyPath);
+
+        Session session = jsch.getSession(System.getenv("SSH_USER"), host, 22);
+        session.setConfig("StrictHostKeyChecking", "no");
+        session.connect(3000);
+
+        ChannelExec channel = (ChannelExec) session.openChannel("exec");
+        channel.setCommand("docker restart " + container);
+        channel.setErrStream(System.err);
+        channel.connect();
+
+        while (!channel.isClosed()) {
+            Thread.sleep(100);
+        }
+
+        log.info("Restart {} on {} exit code {}", container, host, channel.getExitStatus());
+
+        channel.disconnect();
+        session.disconnect();
+    } catch (Exception e) {
+        log.error("SSH restart failed for " + host, e);
     }
+}
+
 }
