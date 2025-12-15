@@ -19,7 +19,7 @@ public class EntranceConsumer {
 
     private final WebSocketHandler webSocketHandler;
 
-    @KafkaListener(topics = "attemps-logs", groupId = "entrance-cockpit-backend")
+    @KafkaListener(topics = "attemps-logs", groupId = "entrance-cockpit-backend2")
     public void consumeAcceptedEntrance(String message) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();

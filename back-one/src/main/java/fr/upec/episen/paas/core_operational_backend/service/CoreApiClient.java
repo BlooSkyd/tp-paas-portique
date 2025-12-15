@@ -34,17 +34,17 @@ public class CoreApiClient {
 
         return callCore(core1, id)
                 .onErrorResume(e -> {
-                    logger.error("Core 1 down → switching to core 2", e);
+                    logger.warn("Core 1 down, basculement vers Core 2"); // plus clean
                     if (core2 != null) {
                         return callCore(core2, id)
                                 .onErrorResume(e2 -> {
-                                    logger.error("Core 2 down", e2);
+                                    logger.error("Core 2 également down", e2);
                                     return Mono.error(new RuntimeException("Aucun core disponible"));
                                 });
                     }
                     return Mono.error(new RuntimeException("Aucun core disponible"));
                 })
-                .block(); // Blocage ici reste sûr grâce à la gestion réactive
+                .block();
     }
 
     private Mono<StudentDTO> callCore(String baseUrlWithPort, Long id) {
